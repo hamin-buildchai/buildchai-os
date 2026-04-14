@@ -133,6 +133,33 @@ Never ship a permanent sidecar "just in case."
 
 ---
 
+## 11. Cascading coach hierarchy (Claude → CEO → PM bots)
+
+**Problem.** If the out-of-band coach (pattern #10) personally teaches every PM bot every hour, the coach becomes the bottleneck *and* the CEO agent becomes ornamental. Worse, the coach keeps context for all four agents simultaneously — token cost balloons and the CEO never learns management.
+
+**Solution.** Push one layer of coaching authority down:
+
+```
+Claude Code (out-of-band)  →  CEO-agent  →  PM bots (polymarket / inf / idea)
+      teaches CEO only        runs hourly review      actual worker agents
+      verifies cascade         + coaches PMs
+```
+
+- **Claude's job**: Every hour, read the cron-generated dump (`/tmp/hourly-review/YYYY-MM-DD-HH.md`), judge only two things:
+  1. Did CEO run its hourly review?
+  2. Did the PM bots actually change their md in response to CEO's coaching?
+  Then coach **CEO only** via `teach-ceo.sh` when either fails.
+- **CEO's job**: Read the same dump, catch PM bot violations (stall loops, fake blockers, batch-rule skips, KPI omission), and teach offending PMs via their own inbox or discuss channel.
+- **PM's job**: Actual work + apply CEO's coaching.
+
+**Gotcha 1.** Claude must not shortcut the chain. If an IDEA bot is stalling and you teach IDEA directly, CEO never learns its own review failure and the problem recurs next week. Fix CEO instead.
+
+**Gotcha 2.** The delegated rule must live in CEO's **HEARTBEAT.md** (a recurring duty), not SOUL.md (identity). We put ours under a `## Hourly Agent Review` section with the concrete checklist: BATCH status, cycle 4-steps, fake blocker, same-phrase repeat, KPI day mention.
+
+**Gotcha 3.** Verify with mtime + grep, not by reading the whole file. If `agent/md` mtime hasn't moved since the teaching call, the agent didn't actually apply it — re-teach or escalate.
+
+---
+
 ## Non-patterns (things we tried that didn't work)
 
 - **Forcing agents to post heartbeat to chat** — produced noise, now forbidden.
