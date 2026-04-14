@@ -1,0 +1,45 @@
+{
+  "gateway": { "port": 18789 },
+  "agents": {
+    "defaults": {
+      "model": "openai-codex/gpt-5.4-mini",
+      "heartbeat": { "every": "30m", "lightContext": true, "isolatedSession": true },
+      "timeoutSeconds": 172800,
+      "llm": { "idleTimeoutSeconds": 300 }
+    },
+    "list": [
+      {"id":"ceo-chai","name":"CEO"},
+      {"id":"polymarket-chai","name":"PM"},
+      {"id":"inf-chai","name":"INF"},
+      {"id":"idea-chai","name":"IDEA"}
+    ]
+  },
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "accounts": {
+        "ceo": {
+          "token": "REPLACE_WITH_CEO_BOT_TOKEN",
+          "allowBots": true,
+          "guilds": {
+            "YOUR_GUILD_ID": {
+              "channels": {
+                "CEO_CHAT_CHANNEL_ID": {"enabled":true,"requireMention":false}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "hooks": {
+    "enabled": true,
+    "token": "REPLACE_WITH_HOOK_SECRET",
+    "path": "/hooks"
+  },
+  "tools": {
+    "exec": {"timeoutSec": 600},
+    "loopDetection": { "detectors": { "pingPong": true } }
+  },
+  "cron": { "enabled": true, "maxConcurrentRuns": 2 }
+}

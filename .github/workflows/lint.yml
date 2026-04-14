@@ -1,0 +1,22 @@
+name: lint
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  shell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck
+        run: |
+          sudo apt-get install -y shellcheck
+          find tools -name "*.sh" -exec shellcheck -S error {} + || true
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install ruff
+      - run: ruff check tools/*.py || true
